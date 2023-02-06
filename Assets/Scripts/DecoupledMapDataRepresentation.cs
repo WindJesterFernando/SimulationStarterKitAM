@@ -335,6 +335,12 @@ public class MapData
                     prevTile = prevTile.lowestMovementCostConnectingNode;
                     Debug.Log(prevTile.x + "," + prevTile.y);
 
+                    prevTile = prevTile.lowestMovementCostConnectingNode;
+                    Debug.Log(prevTile.x + "," + prevTile.y);
+
+                    prevTile = prevTile.lowestMovementCostConnectingNode;
+                    Debug.Log(prevTile.x + "," + prevTile.y);
+
                     return true;
                 }
 
