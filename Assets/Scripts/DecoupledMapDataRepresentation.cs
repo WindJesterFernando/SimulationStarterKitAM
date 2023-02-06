@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System.IO;
 
 public class MapData
 {
@@ -260,24 +262,9 @@ public class MapData
         return count;
     }
 
-
-
     public bool DoesPathExist(TileLocation start, TileLocation end)
     {
-
-        //if (mapTiles[x, y] == TextureSpriteID.Water)
-
-
-        //declare a list, of possible move locations
-        //mapTiles[x1, y1]  is our starting tile
-        //check neighbors, if we can go to that tile
-        //if we can move, go, until we reach destination 
-
-        //ponder use a recursion vs loop
-
-        //mapTiles[x2, y2] is our goal tile
-
-
+        //we need to 
 
         LinkedList<TileLocation> possibleMoveLocations = new LinkedList<TileLocation>();
         LinkedList<TileLocation> previouslyChecked = new LinkedList<TileLocation>();
@@ -286,11 +273,11 @@ public class MapData
 
         while (possibleMoveLocations.Count > 0)
         {
-            Debug.Log("Searching, possible move locations == " + possibleMoveLocations.Count);
+            //Debug.Log("Searching, possible move locations == " + possibleMoveLocations.Count);
             TileLocation tileBeingProcessed = possibleMoveLocations.First.Value;
             possibleMoveLocations.RemoveFirst();
             previouslyChecked.AddLast(tileBeingProcessed);
-
+            
             foreach (TileLocation tl in GetNeighbours(tileBeingProcessed.x, tileBeingProcessed.y))
             {
                 if (tl.x == end.x && tl.y == end.y)
@@ -305,6 +292,8 @@ public class MapData
                     possibleMoveLocations.AddLast(tl);
             }
         }
+
+        Debug.Log("Path Not Found!!!");
 
         return false;
     }
@@ -385,7 +374,40 @@ public class MapData
     //     }
     // }
 
+    public void SerializeToJSON()
+    {
+        string jsonData = Newtonsoft.Json.JsonConvert.SerializeObject(this);
+        Debug.Log(jsonData);
 
+        StreamWriter sw = new StreamWriter(Application.dataPath + Path.DirectorySeparatorChar + "serializedBigDadData.txt");
+        sw.WriteLine(jsonData);
+        sw.Close();
+
+        
+        
+        // Debug.Log(md.mapTiles[3,3]);
+        
+        //string jsonString = Json(this);
+    }
+
+    public void DeserializeFromJSON()
+    {
+
+        string jsonData;
+
+        StreamReader sr = new StreamReader(Application.dataPath + Path.DirectorySeparatorChar + "serializedBigDadData.txt");
+        jsonData = sr.ReadToEnd();
+        sr.Close();
+        MapData md = JsonConvert.DeserializeObject<MapData>(jsonData);
+
+        instance = md;
+
+        //string jsonData = {"mapTiles":[[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0]],"mapSprites":[{"id":1101,"x":6,"y":4},{"id":1201,"x":3,"y":2},{"id":1201,"x":2,"y":3}],"numTilesX":20,"numTilesY":9};
+        
+        //Newtonsoft.Json.JsonSerializ
+        //
+    }
+//using Newtonsoft.Json.Converters;
 }
 
 public class MapSpriteDataRepresentation
@@ -421,3 +443,5 @@ public class TileLocation
     }
 
 }
+
+
