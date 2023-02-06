@@ -264,32 +264,88 @@ public class MapData
 
     public bool DoesPathExist(TileLocation start, TileLocation end)
     {
-        //we need to 
+
+        //we need to:
+        //for each node, the hypotenuse to the end location
+        //for each node movement cost from start
+        //the sum of both nodes 
+        //get a path of nodes
 
         LinkedList<TileLocation> possibleMoveLocations = new LinkedList<TileLocation>();
         LinkedList<TileLocation> previouslyChecked = new LinkedList<TileLocation>();
 
+        start.distanceToEndTile = GetDistanceBetweenTileLocations(start, end);
         possibleMoveLocations.AddLast(start);
 
         while (possibleMoveLocations.Count > 0)
         {
             //Debug.Log("Searching, possible move locations == " + possibleMoveLocations.Count);
-            TileLocation tileBeingProcessed = possibleMoveLocations.First.Value;
-            possibleMoveLocations.RemoveFirst();
+
+            TileLocation lowestDistToEnd = null;
+            foreach (TileLocation tl in possibleMoveLocations)
+            {
+                if (lowestDistToEnd == null)
+                    lowestDistToEnd = tl;
+                else if (lowestDistToEnd.distanceToEndTile > tl.distanceToEndTile)
+                    lowestDistToEnd = tl;
+            }
+
+            TileLocation tileBeingProcessed = lowestDistToEnd;//possibleMoveLocations.First.Value;
+            Debug.Log("Searching tile [" + tileBeingProcessed.x + "," + tileBeingProcessed.y + "], dist to end == " + tileBeingProcessed.distanceToEndTile);
+
+            possibleMoveLocations.Remove(lowestDistToEnd);
             previouslyChecked.AddLast(tileBeingProcessed);
-            
+
             foreach (TileLocation tl in GetNeighbours(tileBeingProcessed.x, tileBeingProcessed.y))
             {
                 if (tl.x == end.x && tl.y == end.y)
                 {
                     Debug.Log("Path has been found!!!!");
+                    Debug.Log(tl.x + "," + tl.y);
+
+                    Debug.Log(tileBeingProcessed.x + "," + tileBeingProcessed.y);
+
+                    TileLocation prevTile = tileBeingProcessed.lowestMovementCostConnectingNode;
+                    Debug.Log(prevTile.x + "," + prevTile.y);
+
+                    prevTile = prevTile.lowestMovementCostConnectingNode;
+                    Debug.Log(prevTile.x + "," + prevTile.y);
+
+                    prevTile = prevTile.lowestMovementCostConnectingNode;
+                    Debug.Log(prevTile.x + "," + prevTile.y);
+
+                    prevTile = prevTile.lowestMovementCostConnectingNode;
+                    Debug.Log(prevTile.x + "," + prevTile.y);
+
+                    prevTile = prevTile.lowestMovementCostConnectingNode;
+                    Debug.Log(prevTile.x + "," + prevTile.y);
+
+                    prevTile = prevTile.lowestMovementCostConnectingNode;
+                    Debug.Log(prevTile.x + "," + prevTile.y);
+
+                    prevTile = prevTile.lowestMovementCostConnectingNode;
+                    Debug.Log(prevTile.x + "," + prevTile.y);
+
+                    prevTile = prevTile.lowestMovementCostConnectingNode;
+                    Debug.Log(prevTile.x + "," + prevTile.y);
+
+                    prevTile = prevTile.lowestMovementCostConnectingNode;
+                    Debug.Log(prevTile.x + "," + prevTile.y);
+
+                    prevTile = prevTile.lowestMovementCostConnectingNode;
+                    Debug.Log(prevTile.x + "," + prevTile.y);
+
                     return true;
                 }
 
                 if (ListHasTileLocation(tl, previouslyChecked) || (ListHasTileLocation(tl, possibleMoveLocations)))
                     ;//Do nothing, we already have processed or queued the tile location for processing
                 else
+                {
+                    tl.distanceToEndTile = GetDistanceBetweenTileLocations(tl, end);
+                    tl.lowestMovementCostConnectingNode = tileBeingProcessed;
                     possibleMoveLocations.AddLast(tl);
+                }
             }
         }
 
@@ -325,27 +381,27 @@ public class MapData
         }
 
 
-        if (x + 1 < numTilesX - 1 && y + 1 < numTilesY - 1)
-        {
-            if (mapTiles[x + 1, y + 1] != TextureSpriteID.Water)
-                neighbours.AddLast(new TileLocation(x + 1, y + 1));
-        }
-        if (x - 1 > 0 && y + 1 < numTilesY - 1)
-        {
-            if (mapTiles[x - 1, y + 1] != TextureSpriteID.Water)
-                neighbours.AddLast(new TileLocation(x - 1, y + 1));
-        }
-        if (x - 1 > 0 && y - 1 > 0)
-        {
-            if (mapTiles[x - 1, y - 1] != TextureSpriteID.Water)
-                neighbours.AddLast(new TileLocation(x - 1, y - 1));
-        }
+        // if (x + 1 < numTilesX - 1 && y + 1 < numTilesY - 1)
+        // {
+        //     if (mapTiles[x + 1, y + 1] != TextureSpriteID.Water)
+        //         neighbours.AddLast(new TileLocation(x + 1, y + 1));
+        // }
+        // if (x - 1 > 0 && y + 1 < numTilesY - 1)
+        // {
+        //     if (mapTiles[x - 1, y + 1] != TextureSpriteID.Water)
+        //         neighbours.AddLast(new TileLocation(x - 1, y + 1));
+        // }
+        // if (x - 1 > 0 && y - 1 > 0)
+        // {
+        //     if (mapTiles[x - 1, y - 1] != TextureSpriteID.Water)
+        //         neighbours.AddLast(new TileLocation(x - 1, y - 1));
+        // }
 
-        if (x + 1 < numTilesX - 1 && y - 1 > 0)
-        {
-            if (mapTiles[x + 1, y - 1] != TextureSpriteID.Water)
-                neighbours.AddLast(new TileLocation(x + 1, y - 1));
-        }
+        // if (x + 1 < numTilesX - 1 && y - 1 > 0)
+        // {
+        //     if (mapTiles[x + 1, y - 1] != TextureSpriteID.Water)
+        //         neighbours.AddLast(new TileLocation(x + 1, y - 1));
+        // }
 
         return neighbours;
     }
@@ -359,6 +415,22 @@ public class MapData
 
         return false;
     }
+
+    private float GetDistanceBetweenTileLocations(TileLocation t1, TileLocation t2)
+    {
+        const float CardinalMovementCost = 10;
+        //const float DiagonalMovementCost = 14;
+
+        float xDif = Mathf.Abs(t1.x - t2.x);
+        float yDif = Mathf.Abs(t1.y - t2.y);
+
+        float distance = CardinalMovementCost * (xDif + yDif);
+
+        return distance;
+    }
+
+
+
 
     // private void ProcessTileLocation(TileLocation tileToProcess, TileLocation end)
     // {
@@ -383,10 +455,10 @@ public class MapData
         sw.WriteLine(jsonData);
         sw.Close();
 
-        
-        
+
+
         // Debug.Log(md.mapTiles[3,3]);
-        
+
         //string jsonString = Json(this);
     }
 
@@ -403,11 +475,11 @@ public class MapData
         instance = md;
 
         //string jsonData = {"mapTiles":[[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0]],"mapSprites":[{"id":1101,"x":6,"y":4},{"id":1201,"x":3,"y":2},{"id":1201,"x":2,"y":3}],"numTilesX":20,"numTilesY":9};
-        
+
         //Newtonsoft.Json.JsonSerializ
         //
     }
-//using Newtonsoft.Json.Converters;
+    //using Newtonsoft.Json.Converters;
 }
 
 public class MapSpriteDataRepresentation
@@ -435,6 +507,9 @@ public static class MapObjectTypeID
 public class TileLocation
 {
     public int x, y;
+    public float distanceToEndTile;
+
+    public TileLocation lowestMovementCostConnectingNode;
 
     public TileLocation(int X, int Y)
     {
