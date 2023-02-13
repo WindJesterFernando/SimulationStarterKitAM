@@ -45,7 +45,7 @@ public partial class TileEditorLogic : MonoBehaviour
 
         TextureSpriteID.Init();
         MapData.instance = new MapData();
-        MapData.instance.Init();
+        MapData.instance.Init(this);
         ContentLoader.Init();
         ConnectToSceneCanvasUI();
 
@@ -117,6 +117,7 @@ public partial class TileEditorLogic : MonoBehaviour
     void Update()
     {
 
+        MapData.instance.Update();
         // if(Input.GetKeyDown(KeyCode.A))
         //     DestoryMapVisuals();
         // if(Input.GetKeyDown(KeyCode.S))
@@ -171,7 +172,7 @@ public partial class TileEditorLogic : MonoBehaviour
 
 
     }
-    void CreateMapVisuals()
+    public void CreateMapVisuals()
     {
         mapTilesContainerParent = new GameObject("MapTilesContainerParent");
         mapSpritesContainerParent = new GameObject("MapSpritesContainerParent");

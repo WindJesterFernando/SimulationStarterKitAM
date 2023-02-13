@@ -19,7 +19,11 @@ public class MapData
     int selectedEditorButtonTextureID;
     int selectedEditorButtonMapObjectType;
 
-    public void Init()
+    Queue<VisualRepresentationOfPathFindingStep> visualRepresentationOfPathFindingSteps;
+
+    TileEditorLogic tileEditorLogic;
+
+    public void Init(TileEditorLogic tileEditorLogic)
     {
         CreateMapTiles();
         mapSprites = new LinkedList<MapSpriteDataRepresentation>();
@@ -27,6 +31,8 @@ public class MapData
         mapSprites.AddLast(new MapSpriteDataRepresentation(TextureSpriteID.Fighter1, 6, 4));
         mapSprites.AddLast(new MapSpriteDataRepresentation(TextureSpriteID.BlackMage1, 3, 2));
         mapSprites.AddLast(new MapSpriteDataRepresentation(TextureSpriteID.BlackMage1, 2, 3));
+
+        this.tileEditorLogic = tileEditorLogic;
     }
     private void CreateMapTiles()
     {
@@ -265,6 +271,8 @@ public class MapData
     public bool DoesPathExist(TileLocation start, TileLocation end)
     {
 
+        visualRepresentationOfPathFindingSteps = new Queue<VisualRepresentationOfPathFindingStep>();
+
         //we need to:
         //for each node, the hypotenuse to the end location
         //for each node movement cost from start
@@ -276,6 +284,7 @@ public class MapData
 
         start.distanceToEndTile = GetDistanceBetweenTileLocations(start, end);
         possibleMoveLocations.AddLast(start);
+        visualRepresentationOfPathFindingSteps.Enqueue(new VisualRepresentationOfPathFindingStep(start.x, start.y, TextureSpriteID.Tent, 0.5f));
 
         while (possibleMoveLocations.Count > 0)
         {
@@ -290,56 +299,32 @@ public class MapData
                     lowestDistToEnd = tl;
             }
 
-            TileLocation tileBeingProcessed = lowestDistToEnd;//possibleMoveLocations.First.Value;
-            Debug.Log("Searching tile [" + tileBeingProcessed.x + "," + tileBeingProcessed.y + "], dist to end == " + tileBeingProcessed.distanceToEndTile);
+            //TileLocation tileBeingProcessed = lowestDistToEnd;//possibleMoveLocations.First.Value;
+            Debug.Log("Searching tile [" + lowestDistToEnd.x + "," + lowestDistToEnd.y + "], dist to end == " + lowestDistToEnd.distanceToEndTile);
 
             possibleMoveLocations.Remove(lowestDistToEnd);
-            previouslyChecked.AddLast(tileBeingProcessed);
+            previouslyChecked.AddLast(lowestDistToEnd);
 
-            foreach (TileLocation tl in GetNeighbours(tileBeingProcessed.x, tileBeingProcessed.y))
+            visualRepresentationOfPathFindingSteps.Enqueue(new VisualRepresentationOfPathFindingStep(lowestDistToEnd.x, lowestDistToEnd.y, TextureSpriteID.WindmillTop, 0.5f));
+
+            foreach (TileLocation tl in GetNeighbours(lowestDistToEnd.x, lowestDistToEnd.y))
             {
                 if (tl.x == end.x && tl.y == end.y)
                 {
                     Debug.Log("Path has been found!!!!");
+                    visualRepresentationOfPathFindingSteps.Enqueue(new VisualRepresentationOfPathFindingStep(tl.x, tl.y, TextureSpriteID.WindmillTop, 0.5f));
                     Debug.Log(tl.x + "," + tl.y);
 
-                    Debug.Log(tileBeingProcessed.x + "," + tileBeingProcessed.y);
+                    Debug.Log(lowestDistToEnd.x + "," + lowestDistToEnd.y);
 
-                    TileLocation prevTile = tileBeingProcessed.lowestMovementCostConnectingNode;
+                    TileLocation prevTile = lowestDistToEnd.lowestMovementCostConnectingNode;
                     Debug.Log(prevTile.x + "," + prevTile.y);
 
-                    prevTile = prevTile.lowestMovementCostConnectingNode;
-                    Debug.Log(prevTile.x + "," + prevTile.y);
-
-                    prevTile = prevTile.lowestMovementCostConnectingNode;
-                    Debug.Log(prevTile.x + "," + prevTile.y);
-
-                    prevTile = prevTile.lowestMovementCostConnectingNode;
-                    Debug.Log(prevTile.x + "," + prevTile.y);
-
-                    prevTile = prevTile.lowestMovementCostConnectingNode;
-                    Debug.Log(prevTile.x + "," + prevTile.y);
-
-                    prevTile = prevTile.lowestMovementCostConnectingNode;
-                    Debug.Log(prevTile.x + "," + prevTile.y);
-
-                    prevTile = prevTile.lowestMovementCostConnectingNode;
-                    Debug.Log(prevTile.x + "," + prevTile.y);
-
-                    prevTile = prevTile.lowestMovementCostConnectingNode;
-                    Debug.Log(prevTile.x + "," + prevTile.y);
-
-                    prevTile = prevTile.lowestMovementCostConnectingNode;
-                    Debug.Log(prevTile.x + "," + prevTile.y);
-
-                    prevTile = prevTile.lowestMovementCostConnectingNode;
-                    Debug.Log(prevTile.x + "," + prevTile.y);
-
-                    prevTile = prevTile.lowestMovementCostConnectingNode;
-                    Debug.Log(prevTile.x + "," + prevTile.y);
-
-                    prevTile = prevTile.lowestMovementCostConnectingNode;
-                    Debug.Log(prevTile.x + "," + prevTile.y);
+                    while (prevTile != start)
+                    {
+                        prevTile = prevTile.lowestMovementCostConnectingNode;
+                        Debug.Log(prevTile.x + "," + prevTile.y);
+                    }
 
                     return true;
                 }
@@ -349,10 +334,14 @@ public class MapData
                 else
                 {
                     tl.distanceToEndTile = GetDistanceBetweenTileLocations(tl, end);
-                    tl.lowestMovementCostConnectingNode = tileBeingProcessed;
+                    tl.lowestMovementCostConnectingNode = lowestDistToEnd;
                     possibleMoveLocations.AddLast(tl);
+
+                    visualRepresentationOfPathFindingSteps.Enqueue(new VisualRepresentationOfPathFindingStep(tl.x, tl.y, TextureSpriteID.Tent, 0.5f));
                 }
             }
+
+
         }
 
         Debug.Log("Path Not Found!!!");
@@ -485,7 +474,31 @@ public class MapData
         //Newtonsoft.Json.JsonSerializ
         //
     }
+
     //using Newtonsoft.Json.Converters;
+
+
+    public void Update()
+    {
+        if(visualRepresentationOfPathFindingSteps != null)
+        {
+            if(visualRepresentationOfPathFindingSteps.Count > 0)
+            {
+                 VisualRepresentationOfPathFindingStep c = visualRepresentationOfPathFindingSteps.Peek();
+                 c.timeToWait -= Time.deltaTime;
+
+                 if(c.timeToWait <= 0)
+                 {
+                    mapTiles[c.x, c.y] = c.idToSet;
+                    visualRepresentationOfPathFindingSteps.Dequeue();
+                    tileEditorLogic.DestoryMapVisuals();
+                    tileEditorLogic.CreateMapVisuals();
+                 }
+            }
+        }
+        
+    }
+
 }
 
 public class MapSpriteDataRepresentation
@@ -525,4 +538,21 @@ public class TileLocation
 
 }
 
+
+
+public class VisualRepresentationOfPathFindingStep
+{
+    public int x, y;
+    public int idToSet;
+
+    public float timeToWait;
+
+    public VisualRepresentationOfPathFindingStep(int x, int y, int idToSet, float timeToWait)
+    {
+        this.x = x;
+        this.y = y;
+        this.idToSet = idToSet;
+        this.timeToWait = timeToWait;
+    }
+}
 
