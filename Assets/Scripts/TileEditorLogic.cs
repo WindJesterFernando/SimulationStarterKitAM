@@ -157,18 +157,19 @@ public partial class TileEditorLogic : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.G))
         {
-            MapData.instance.DoesPathExist(new TileLocation(0,0), new TileLocation(6, 6));
+            MapData.instance.DoesPathExist(new TileLocation(0,0), new TileLocation(13, 13));
         }
 
-        // if (Input.GetKeyDown(KeyCode.G))
-        //     MapData.instance.SerializeToJSON();
+        if (Input.GetKeyDown(KeyCode.A))
+            MapData.instance.SerializeToJSON();
 
-        // if (Input.GetKeyDown(KeyCode.H))
-        // {
-        //     MapData.instance.DeserializeFromJSON();
-        //     DestoryMapVisuals();
-        //     CreateMapVisuals();
-        // }
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            MapData.instance.DeserializeFromJSON();
+            MapData.instance.SetTileEditorLogic(this);
+            DestoryMapVisuals();
+            CreateMapVisuals();
+        }
 
 
     }
