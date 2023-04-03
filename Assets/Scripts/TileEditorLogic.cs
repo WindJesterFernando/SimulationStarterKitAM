@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public partial class TileEditorLogic : MonoBehaviour
 {
     public static GameObject tileEditorLogic;
@@ -11,10 +12,14 @@ public partial class TileEditorLogic : MonoBehaviour
     GameObject[,] mapTiles;
     float tileVisualSize;
 
+
     GameObject mapTilesContainerParent;
     GameObject mapSpritesContainerParent;
     GameObject tileButtonsContainerParent;
     GameObject spriteButtonsContainerParent;
+
+    public float testValToSetViaCustomEditor;
+
 
     #endregion
 
@@ -35,6 +40,8 @@ public partial class TileEditorLogic : MonoBehaviour
 
     void Start()
     {
+        Debug.Log("asdfasdfg = " + testValToSetViaCustomEditor);
+
         if (TileEditorLogic.tileEditorLogic != null)
         {
             Debug.Log("Singleton violation in TileEditorLogic!");
@@ -155,9 +162,10 @@ public partial class TileEditorLogic : MonoBehaviour
         // }
 
 
+
         if (Input.GetKeyDown(KeyCode.G))
         {
-            MapData.instance.DoesPathExist(new TileLocation(0,0), new TileLocation(13, 13));
+            MapData.instance.DoesPathExist(new TileLocation(0, 0), new TileLocation(13, 13));
         }
 
         if (Input.GetKeyDown(KeyCode.A))
@@ -172,7 +180,22 @@ public partial class TileEditorLogic : MonoBehaviour
         }
 
 
+        //mapTiles[0,0].AddComponent<>
+
+        //         goto Place
+
+        // ;
+
+        // ;
+        // ;
+
+        //         Place:
+        //             ;
+
+
+
     }
+
     public void CreateMapVisuals()
     {
         mapTilesContainerParent = new GameObject("MapTilesContainerParent");
