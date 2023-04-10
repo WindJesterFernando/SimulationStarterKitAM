@@ -51,6 +51,8 @@ public class CustomInspectorForEditor : Editor
             tileEditorLogic.testValToSetViaCustomEditor = newVal;
 
 
+        //GUI.Button(new Rect(50, 50, 150, 100), "asfsaf");
+
         if (GUI.Button(new Rect(50, 50, 150, 100), new GUIContent("I am a button", "This is the tooltip")))
         {
             Debug.Log("You clicked the button!");

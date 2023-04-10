@@ -177,7 +177,20 @@ public partial class TileEditorLogic : MonoBehaviour
             MapData.instance.SetTileEditorLogic(this);
             DestoryMapVisuals();
             CreateMapVisuals();
+
+            
         }
+
+        if(Input.GetKeyDown(KeyCode.Tab))
+        {
+            //MapData.instance.ProcessGameOfLifeIteration();
+            MapData.instance.ProcessSandSimIteration();
+            DestoryMapVisuals();
+            CreateMapVisuals();
+        }
+
+
+        
 
 
         //mapTiles[0,0].AddComponent<>

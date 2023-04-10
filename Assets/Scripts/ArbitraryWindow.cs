@@ -11,7 +11,7 @@ public class ArbitraryWindow : EditorWindow
 
     bool togVal;
 
-    [MenuItem("Window/Arbitrary Window")]
+    [MenuItem("Window/Arbitrary Windowsas")]
     public static void ShowWindow()
     {
         EditorWindow.GetWindow(typeof(ArbitraryWindow));

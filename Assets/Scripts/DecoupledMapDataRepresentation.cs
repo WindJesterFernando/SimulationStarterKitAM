@@ -297,14 +297,14 @@ public class MapData
             {
                 if (tileToCheck == null)
                     tileToCheck = tl;
-                else if(tl.distanceFromStart + tl.distanceToEndTile < tileToCheck.distanceFromStart + tileToCheck.distanceToEndTile)
-                //else if (tl.distanceToEndTile < tileToCheck.distanceToEndTile)
+                else if (tl.distanceFromStart + tl.distanceToEndTile < tileToCheck.distanceFromStart + tileToCheck.distanceToEndTile)
+                    //else if (tl.distanceToEndTile < tileToCheck.distanceToEndTile)
                     tileToCheck = tl;
 
                 //tl.distanceFromStart
             }
 
-            
+
 
             //TileLocation tileBeingProcessed = tileToCheck;//possibleMoveLocations.First.Value;
             Debug.Log("Searching tile [" + tileToCheck.x + "," + tileToCheck.y + "], dist to end == " + tileToCheck.distanceToEndTile);
@@ -344,19 +344,19 @@ public class MapData
                 else
                 {
                     tl.distanceToEndTile = GetDistanceBetweenTileLocations(tl, end);
-                    
+
                     float distFromStart = tileToCheck.distanceFromStart + 10;//GetDistanceBetweenTileLocations(tl, start);
 
 
                     Debug.Log("Checking: " + distFromStart + " < " + tl.distanceFromStart);
-                    if(distFromStart < tl.distanceFromStart)
+                    if (distFromStart < tl.distanceFromStart)
                     {
-                        
+
                         tl.distanceFromStart = distFromStart;
                         tl.lowestMovementCostConnectingNode = tileToCheck;
                     }
 
-                    
+
                     possibleMoveLocations.AddLast(tl);
 
                     visualRepresentationOfPathFindingSteps.Enqueue(new VisualRepresentationOfPathFindingStep(tl.x, tl.y, TextureSpriteID.Tent, 0.15f));
@@ -446,6 +446,67 @@ public class MapData
         return distance;
     }
 
+
+
+    public void ProcessSandSimIteration()
+    {
+
+        //int[,] nextMapTiles = new int[numTilesX, numTilesY];
+
+        for (int i = 0; i < numTilesX; i++)
+        {
+            for (int j = 0; j < numTilesY; j++)
+            {
+                bool isSand = (mapTiles[i, j] == TextureSpriteID.Water);
+
+                if (isSand)
+                {
+
+
+
+
+                    if (j > 0)
+                    {
+                        bool hasMoved = false;
+                        //&&  && 
+                        if (mapTiles[i, j - 1] == TextureSpriteID.Grass)
+                        {
+                            mapTiles[i, j - 1] = TextureSpriteID.Water;
+                            mapTiles[i, j] = TextureSpriteID.Grass;
+                            hasMoved = true;
+                        }
+
+                        if (i > 0 && !hasMoved)
+                        {
+                            if (mapTiles[i - 1, j - 1] == TextureSpriteID.Grass)
+                            {
+                                mapTiles[i - 1, j - 1] = TextureSpriteID.Water;
+                                mapTiles[i, j] = TextureSpriteID.Grass;
+                                hasMoved = true;
+                            }
+                        }
+
+                        if (i < numTilesX - 1 && !hasMoved)
+                        {
+                            if (mapTiles[i + 1, j - 1] == TextureSpriteID.Grass)
+                            {
+                                mapTiles[i + 1, j - 1] = TextureSpriteID.Water;
+                                mapTiles[i, j] = TextureSpriteID.Grass;
+                                hasMoved = true;
+                            }
+                        }
+                    }
+
+                    // if (count == 3 || count == 2)
+                    //     nextMapTiles[i, j] = TextureSpriteID.Water;
+                    // else
+                    //     nextMapTiles[i, j] = TextureSpriteID.Grass;
+                }
+            }
+        }
+
+        //mapTiles = nextMapTiles;
+    }
 
 
 
@@ -589,3 +650,15 @@ public class VisualRepresentationOfPathFindingStep
     }
 }
 
+
+
+
+//TASK LIST
+//create a sand particle (a class or...)
+//update sand particles with falling sand logic
+//manage visual display
+//control input
+//
+//
+//
+//iterate on sand sim to include rng on falling to left/right
